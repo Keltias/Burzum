@@ -1,6 +1,6 @@
 <?php
-namespace App\Config;
-require_once "../../vendor/autoload.php";
+
+namespace App;
 
 class Database extends Settings
 {
