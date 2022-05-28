@@ -1,0 +1,42 @@
+@mixin  FlexBox($axisX, $axisY) 
+{
+    display: flex;
+    justify-content: $axisX;
+    align-items: $axisY;    
+}
+
+%tplWrpapper 
+{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+%tplUserFormsStyles
+{
+    width: 600px;
+    margin: 0 auto;
+    legend {
+        width: 100%;
+        text-align: center;
+    }
+    form {
+        > * {
+            margin: 20px 0px;
+        }
+        .button-box {
+            width: 100%;
+            @include FlexBox(center, center);
+            
+        }
+        .support-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .error-box {
+            .error {
+                color: black;
+            }
+        }
+    }
+}

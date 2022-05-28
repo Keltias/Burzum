@@ -1,20 +1,19 @@
-<?php
+<? 
+    session_start();
+    require "../app/config/settings.php";
+    require "../vendor/autoload.php";
+    use App\Core\Router;
 
-require_once __DIR__ . "../vendor/autoload.php";
+    $url = key($_GET);
 
-?>
+    $router = new Router(); 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="./templates/assets/vendor/bootstrap/dist/css/bootstrap.css">
-   <link rel="stylesheet" href="./templates/assets/css/style.css">
-   <title>Burzum</title>
-</head>
-<body>
-   
-</body>
-</html>
+    $router->addRoute("/", "main.php");
+    $router->addRoute("/public/user-login", "user-login.php");
+    $router->addRoute("/public/user-register", "user-reg.php");
+    $router->addRoute("/public/user", "user-profile.php");
+    $router->addRoute("/public/article-create", "article-create.php");
+    $router->addRoute("/public/article-delete", "article-delete.php");
+    $router->addRoute("/public/article-page", "article-page.php");
+
+    $router->route("/".$url);

@@ -1,0 +1,50 @@
+@import "reset.scss";
+@import "fonts.scss";
+@import "templates.scss";
+@import "variables.scss";
+
+.article__create {
+    width: 100%;
+    height: 100%;
+    &-container {
+        @extend %tplWrpapper;
+        height: 100%;
+        @include FlexBox(none, center);
+    }
+    &-form {
+        @extend %tplUserFormsStyles;
+        form {
+            .article-text {
+                resize: none !important;
+                height: 100px;
+            }
+        }
+    }
+}
+
+.user__reg {
+    width: 100%;
+    height: 100%;
+    &-container {
+        @extend %tplWrpapper;
+        @include FlexBox(center, center);
+        height: 100%;
+    }
+    &-form {
+        @extend %tplUserFormsStyles;
+
+    }
+}
+
+.user__login {
+    width: 100%;
+    height: 100%;
+    &-container {
+        @extend %tplWrpapper;
+        @include FlexBox(center, center);
+        height: 100%;
+    }
+    &-form {
+        @extend %tplUserFormsStyles;
+    }
+}
