@@ -2,8 +2,18 @@
     require "./tpl/header.php";
     use App\Controllers\UserController;
 
-    $userReg = new UserController();
-    $userReg->userRegister();
+    if(isset($_POST['button']))
+    {
+        $data = [
+            'username' => trim(htmlspecialchars($_POST['username'])),
+            'email' => trim(htmlspecialchars($_POST['email'])),
+            'password' => trim(htmlspecialchars($_POST['password'])),
+            'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm']))
+        ];
+
+        $user_reg = new UserController($data);
+        $user_reg->UserRegister();
+    }
 ?>
 <section class="user__reg">
     <div class="user__reg-container">
@@ -34,7 +44,12 @@
                 </div>
                 <div class="error-box">
                     <p>
-                        <?= $_SESSION['error']; ?>
+                        <?php
+                            if(isset($_SESSION['error']))
+                            {
+                                echo $_SESSION['error'];
+                            }
+                        ?>
                     </p>
                 </div>
             </form>

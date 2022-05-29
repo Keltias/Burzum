@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Core\Controller;
 use PDO;
 
 class Database
@@ -12,8 +13,8 @@ class Database
     private $db_user = DB_USER;
     private $db_pass = DB_PASS;
 
-    private $stmt;
-    private $array;
+    public $stmt;
+    public $array;
 
     public function __construct()
     {
@@ -49,13 +50,18 @@ class Database
         }
         $this->stmt->bindValue($params, $value, $type);
     }
+
     public function query($sql)
     {
         $this->stmt = $this->dbconn->prepare($sql);
     }
+
     public function execute()
     {
         $this->stmt->execute();
-        $this->array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function MakeFetch($fetch_type)
+    {
+        $this->array = $this->stmt->$fetch_type(PDO::FETCH_ASSOC); 
     }
 }

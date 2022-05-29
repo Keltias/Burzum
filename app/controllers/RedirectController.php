@@ -5,7 +5,7 @@ class RedirectController
 {
     public $redirect_page;
 
-    function userRedirect($path)
+    public function __construct($path)
     {
         $this->redirect_page = $path;
         header("Location: {$this->redirect_page}");
