@@ -8,6 +8,7 @@ class UserController
 {
     public $data;
     public $redirect_page;
+    
 
     public function userRegister()
     { 

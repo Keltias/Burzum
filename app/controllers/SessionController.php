@@ -5,50 +5,29 @@ use App\Controllers\RedirectController;
 class SessionController
 {
     public $session;
-    
-    public function SessionError($message, $page)
+
+    public function SessionError($session, $message, $page)
     {   
-        $_SESSION['error'] = $message;
-        $this->session = $_SESSION['error'];
+        $this->session = $session;
+        $_SESSION[$this->session] = $message;
         $redirect = new RedirectController;
         $redirect->userRedirect($page);
     }
 
-    public function CreateUserSession($data, $page)
+    public function CreateUserSession($session, $data, $page)
     {
-        $_SESSION['user'] = [
+        $this->session = $session;
+        $_SESSION[$this->session] = [
             'username' => $data['username'],
             'email' => $data['email']
         ];
         $redirect = new RedirectController;
         $redirect->userRedirect($page);
     }
-
-    public function CreateAdminSession($data, $page)
+    public function CheckSession($session, $page)
     {
-        $_SESSION['admin'] = [
-            'username' => $data['username'],
-            'email' => $data['email']
-        ];
-        $redirect = new RedirectController;
-        $redirect->userRedirect($page);
-    }
-
-    public function CheckUserSession($page)
-    {
-        $this->session = $_SESSION['user'];
-
-        if(!isset($this->userSession))
-        {
-            $redirect = new RedirectController;
-            $redirect->userRedirect($page);
-        }
-    }
-    public function CheckAdminSession($page)
-    {
-        $this->session = $_SESSION['admin'];
-
-        if(!isset($this->adminSession))
+        $this->session = $_SESSION[$session];
+        if(!isset($this->session))
         {
             $redirect = new RedirectController;
             $redirect->userRedirect($page);
@@ -56,7 +35,8 @@ class SessionController
     }
     public function UnsetSession($session, $page)
     {
-        unset($session);
+        $this->session = $_SESSION[$session];
+        unset($this->session);
         $redirect = new RedirectController;
         $redirect->userRedirect($page);
     }

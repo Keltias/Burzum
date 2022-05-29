@@ -13,6 +13,7 @@ class Database
     private $db_pass = DB_PASS;
 
     private $stmt;
+    private $array;
 
     public function __construct()
     {
@@ -55,5 +56,6 @@ class Database
     public function execute()
     {
         $this->stmt->execute();
+        $this->array = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
