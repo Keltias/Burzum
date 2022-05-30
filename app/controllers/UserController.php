@@ -107,7 +107,7 @@ class UserController extends Controller
             }
             else
             {
-                $this->redirect_page = '/autorization';
+                $this->redirect_page = '/login';
                 $this->data['password'] = password_hash($this->data['password'], PASSWORD_BCRYPT, ['cost' => 12]);  
 
                 $register_user = new User();
@@ -144,7 +144,7 @@ class UserController extends Controller
         {
             $this->server_message = 'Неверные данные.';
             $this->server_response = 'error';
-            $this->redirect_page = '/autorization';
+            $this->redirect_page = '/login';
 
             $this->session = new SessionController();
             $this->session->SessionError($this->server_response,$this->server_message,$this->redirect_page);
