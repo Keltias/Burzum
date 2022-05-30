@@ -12,7 +12,7 @@ class User extends Model
 
     public function UserCheck(array $data)
     {
-        $this->sql = ("SELECT `username`, `email` FROM {$this->table_name} WHERE `username` = :username OR `email` = :email");
+        $this->sql = ("SELECT * FROM {$this->table_name} WHERE `username` = :username OR `email` = :email");
         $this->dbHandler->query($this->sql);
     
         $this->dbHandler->bind(':username', $data['username']);
@@ -20,6 +20,8 @@ class User extends Model
     
         $this->dbHandler->execute();
         $this->dbHandler->MakeFetch('fetch');
+
+        var_dump($this->dbHandler);
     }
 
     public function CreateUser(array $data)

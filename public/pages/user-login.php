@@ -1,12 +1,30 @@
-<?php require "./tpl/header.php" ?>
+<?php 
+    require "./tpl/header.php"; 
+    use App\Controllers\UserController;
+    if(isset($_POST['button']))
+    {
+        if(isset($_SESSION['error']))
+        {
+            unset($_SESSION['error']);
+        }
+
+        $data = [
+            'username' => trim(htmlspecialchars($_POST['username'])),
+            'password' => trim(htmlspecialchars($_POST['password']))
+        ];
+
+        $user_login = new UserController($data);
+        $user_login->UserLogin();
+    }
+?>
 <section class="user__login">
     <div class="user__login-container">
         <fieldset class="user__login-form">
             <legend>Авторизация</legend>
-            <form action="../handlers/UserLoginHandler.php" method="POST">
+            <form method="POST">
                 <div class="form-floating">
-                    <input type="text" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Email</label>
+                    <input type="text" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Логин</label>
                 </div>
                 <div class="form-floating">
                     <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
@@ -17,6 +35,14 @@
                 </div>
                 <div class="support-box">
                     <a href="#">Забыли пароль?</a>
+                </div>
+                <div class="error-box">
+                    <?php
+                        if(isset($_SESSION['error']))
+                        {
+                            echo $_SESSION['error'];
+                        }
+                    ?>
                 </div>
             </form>
         </fieldset>

@@ -1,9 +1,12 @@
 <?php 
     require "./tpl/header.php";
     use App\Controllers\UserController;
-
     if(isset($_POST['button']))
     {
+        if(isset($_SESSION['error']))
+        {
+            unset($_SESSION['error']);
+        }
         $data = [
             'username' => trim(htmlspecialchars($_POST['username'])),
             'email' => trim(htmlspecialchars($_POST['email'])),

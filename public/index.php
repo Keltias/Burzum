@@ -9,9 +9,9 @@
     $router = new Router(); 
 
     $router->addRoute("/", "main.php");
-    $router->addRoute("/public/user-login", "user-login.php");
-    $router->addRoute("/public/user-register", "user-reg.php");
-    $router->addRoute("/public/user", "user-profile.php");
+    $router->addRoute("/public/autorization", "user-login.php");
+    $router->addRoute("/public/registration", "user-reg.php");
+    $router->addRoute("/public/profile", "user-profile.php");
     $router->addRoute("/public/article-create", "article-create.php");
     $router->addRoute("/public/article-delete", "article-delete.php");
     $router->addRoute("/public/article-page", "article-page.php");

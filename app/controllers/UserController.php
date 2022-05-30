@@ -16,16 +16,18 @@ class UserController extends Controller
     public $email;
     public $username;
 
+    public $session;
+
     public function UserRegister()
     {
-        $this->redirect_page = '/user-register';
+        $this->redirect_page = '/registration';
         $this->server_response = 'error';
 
         $email_pattern = '/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{1,}$/';
         $username_pattern = '/^[a-z0-9-_]{5,13}$/i';
         $password_pattern = '/^[a-z0-9-_$&!@#]{6,}+$/i';
 
-        $user_check = new User;
+        $user_check = new User();
         $user_check->UserCheck($this->data);
 
         $this->email = $user_check->dbHandler->array['email'];
@@ -42,8 +44,8 @@ class UserController extends Controller
         elseif($this->username == $this->data['username'])
         {
             $this->server_message = 'Данный логин уже используется';
-            $error = new SessionController;
-            $error->SessionError($this->server_response, $this->server_message, $this->redirect_page);
+            $this->session = new SessionController;
+            $this->session->SessionError($this->server_response, $this->server_message, $this->redirect_page);
             return;
         }
 
@@ -51,61 +53,61 @@ class UserController extends Controller
         if(empty($this->data['email']))
         {
             $this->server_message = 'Пожалуйста, укажите почту';
-            $error = new SessionController;
-            $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+            $this->session = new SessionController;
+            $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
 
         }
         elseif(empty($this->data['username']))
         {
             $this->server_message = 'Пожалуйста, придумайте логин';
-            $error = new SessionController;
-            $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+            $this->session = new SessionController;
+            $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
 
         }
         elseif(empty($this->data['password']))
         {
             $this->server_message = 'Пожалуйста, придумайте пароль';
-            $error = new SessionController;
-            $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+            $this->session = new SessionController;
+            $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
 
         }
         elseif(empty($this->data['password_confirm']))
         {
             $this->server_message = 'Пожалуйста, подтвердите пароль';
-            $error = new SessionController;
-            $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+            $this->session = new SessionController;
+            $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
         }
         else
         {
             if(!preg_match($email_pattern, $this->data['email']))
             {
                 $this->server_message = 'Пожалуйста, укажите существующую почту';
-                $error = new SessionController;
-                $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                $this->session = new SessionController;
+                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
             }
             elseif(!preg_match($username_pattern, $this->data['username']))
             {
                 $this->server_message = 'Пожалуйста, придумайте соответствующий логин';
-                $error = new SessionController;
-                $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                $this->session = new SessionController;
+                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
     
             }
             elseif(!preg_match($password_pattern, $this->data['password']))
             {
                 $this->server_message = 'Пожалуйста, придумайте сильный пароль.';
-                $error = new SessionController;
-                $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                $this->session = new SessionController;
+                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
     
             }
             elseif($this->data['password'] !== $this->data['password_confirm'])
             {
                 $this->server_message= 'Пароли не совпадают';
-                $error = new SessionController;
-                $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                $this->session = new SessionController;
+                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
             }
             else
             {
-                $this->redirect_page = '/user-login';
+                $this->redirect_page = '/autorization';
                 $this->data['password'] = password_hash($this->data['password'], PASSWORD_BCRYPT, ['cost' => 12]);  
 
                 $register_user = new User();
@@ -113,6 +115,39 @@ class UserController extends Controller
 
                 $user_redirect = new RedirectController($this->redirect_page);
             }
+        }
+    }
+    public function UserLogin()
+    {
+        $user_check = new User();
+        $user_check->UserCheck($this->data);
+        
+        $this->username = $user_check->dbHandler->array['username'];
+        $this->email = $user_check->dbHandler->array['email'];
+        $this->password = $user_check->dbHandler->array['password'];
+
+        if($this->data['username'] == $this->username && password_verify($this->data['password'], $this->password))
+        {
+            
+            $this->data = [
+                'username' => $this->data['username'],
+                'email' => $this->email
+            ];
+
+            $this->server_response = 'user';
+            $this->redirect_page = '/profile';
+
+            $this->session = new SessionController();
+            $this->session->CreateSession($this->server_response,$this->data,$this->redirect_page);
+        }
+        else
+        {
+            $this->server_message = 'Неверные данные.';
+            $this->server_response = 'error';
+            $this->redirect_page = '/autorization';
+
+            $this->session = new SessionController();
+            $this->session->SessionError($this->server_response,$this->server_message,$this->redirect_page);
         }
     }
 }
