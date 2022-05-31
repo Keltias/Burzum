@@ -1,23 +1,3 @@
-<?php 
-    require "./tpl/header.php";
-    use App\Controllers\UserController;
-    if(isset($_POST['button']))
-    {
-        if(isset($_SESSION['error']))
-        {
-            unset($_SESSION['error']);
-        }
-        $data = [
-            'username' => trim(htmlspecialchars($_POST['username'])),
-            'email' => trim(htmlspecialchars($_POST['email'])),
-            'password' => trim(htmlspecialchars($_POST['password'])),
-            'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm']))
-        ];
-
-        $user_reg = new UserController($data);
-        $user_reg->UserRegister();
-    }
-?>
 <section class="user__reg">
     <div class="user__reg-container">
         <fieldset class="user__reg-form">
@@ -59,4 +39,3 @@
         </fieldset>
     </div>
 </section>
-<?php require "./tpl/footer.php" ?>

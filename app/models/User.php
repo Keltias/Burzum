@@ -1,9 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Models\Database;
 use App\Core\Model;
-use App\Controllers\UserController;
 
 class User extends Model
 {
@@ -19,9 +17,7 @@ class User extends Model
         $this->dbHandler->bind(':email', $data['email']);
     
         $this->dbHandler->execute();
-        $this->dbHandler->MakeFetch('fetch');
-
-        var_dump($this->dbHandler);
+        $this->dbHandler->FetchResult('fetch');
     }
 
     public function CreateUser(array $data)

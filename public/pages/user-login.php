@@ -1,6 +1,4 @@
-<?php 
-    require "./tpl/header.php"; 
-?>
+
 <section class="user__login">
     <div class="user__login-container">
         <fieldset class="user__login-form">
@@ -32,4 +30,3 @@
         </fieldset>
     </div>
 </section>
-<?php require "./tpl/footer.php" ?>

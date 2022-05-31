@@ -1,12 +1,15 @@
 <?php
 namespace App\Core;
+use App\Core\View;
 
-class Controller
+abstract class Controller
 {
-    public $data;
+    public $route;
+    public $view;
     
-    public function __construct($data)
+    public function __construct($route)
     {
-        $this->data = $data;
+        $this->route = $route;
+        $this->view = new View($this->route);
     }
 }

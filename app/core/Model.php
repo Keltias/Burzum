@@ -2,7 +2,7 @@
 namespace App\Core;
 use App\Models\Database;
 
-class Model 
+abstract class Model 
 {
     public $dbHandler;
 

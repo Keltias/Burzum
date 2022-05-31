@@ -1,4 +1,3 @@
-<? require "./tpl/header.php" ?>
 <section class="main__block">
     <div class="container px-4 py-5" id="custom-cards">
         <h2 class="pb-2 border-bottom">Custom cards</h2>

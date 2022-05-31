@@ -60,7 +60,7 @@ class Database
     {
         $this->stmt->execute();
     }
-    public function MakeFetch($fetch_type)
+    public function FetchResult($fetch_type)
     {
         $this->array = $this->stmt->$fetch_type(PDO::FETCH_ASSOC); 
     }

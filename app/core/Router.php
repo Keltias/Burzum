@@ -1,30 +1,60 @@
 <?php
+
 namespace App\Core;
 
 class Router
 {
-    public $pages = array();
+    protected $array;
+    protected $routes = [];
+    protected $params = [];
 
-    function AddRoute($url, $path)
+    function __construct($array)
     {
-        $this->pages[$url] = $path;
+        $this->array = $array;
+        foreach ($array as $key => $value) 
+        {
+            $this->addRoute($key, $value);
+        }
     }
 
-    function route($url)
+    public function addRoute($route, $params)
     {
-        $path = $this->pages[$url];
+        $route = '#^'.$route.'$#';
+        $this->routes[$route] = $params;
+    }
 
-        $file_dir = "pages/". $path;
-
-        if($path == "")
+    public function checkRoute()
+    {
+        $url = trim($_SERVER['REQUEST_URI'], '/');
+        foreach ($this->routes as $route => $params)
         {
-            require "404.php";
-            die();
+            if(preg_match($route, $url, $matches))
+            {
+                $this->params = $params;
+                return true;
+            }
         }
-
-        if(file_exists($file_dir))
+        return false;
+    }
+    public function runRoute()
+    {
+        if($this->checkRoute())
         {
-            require $file_dir;
+            $controller = 'App\Controllers\\'.$this->params['controller'];
+            if(class_exists($controller))
+            {
+                $method = $this->params['method'];
+                if(method_exists($controller, $method))
+                {
+                    $object = new $controller($this->params);
+                    $object->$method();
+                }
+            }
+            else
+            {
+                require "404.php";
+                die();
+            }
         }
         else
         {
