@@ -1,21 +1,5 @@
 <?php 
     require "./tpl/header.php"; 
-    use App\Controllers\UserController;
-    if(isset($_POST['button']))
-    {
-        if(isset($_SESSION['error']))
-        {
-            unset($_SESSION['error']);
-        }
-
-        $data = [
-            'username' => trim(htmlspecialchars($_POST['username'])),
-            'password' => trim(htmlspecialchars($_POST['password']))
-        ];
-
-        $user_login = new UserController($data);
-        $user_login->UserLogin();
-    }
 ?>
 <section class="user__login">
     <div class="user__login-container">

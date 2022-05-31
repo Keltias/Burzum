@@ -3,7 +3,7 @@ namespace App\Core;
 
 class Router
 {
-    private $pages = array();
+    public $pages = array();
 
     function AddRoute($url, $path)
     {
