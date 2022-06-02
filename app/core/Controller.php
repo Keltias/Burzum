@@ -6,6 +6,9 @@ abstract class Controller
 {
     public $route;
     public $view;
+    public $action;
+
+    public $data;
     
     public function __construct($route)
     {

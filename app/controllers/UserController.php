@@ -8,7 +8,6 @@ use App\Core\Controller;
 
 class UserController extends Controller
 {
-    public $data;
 
     public $redirect_page;
     public $server_message;
@@ -22,7 +21,7 @@ class UserController extends Controller
 
     public function UserRegister()
     {
-        $this->view->RenderHTML('Регистрация');
+        $this->view->RenderHTML('Регистрация','');
 
         $this->redirect_page = '/registration';
         $this->server_response = 'error';
@@ -39,17 +38,17 @@ class UserController extends Controller
                 'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm']))
             ];
             
-            $user_check = new User();
-            $user_check->UserCheck($this->data);
+            $this->actiona = new User();
+            $this->actiona->UserCheck($this->data);
 
-            $this->email = $user_check->dbHandler->array['email'];
-            $this->username = $user_check->dbHandler->array['username'];
+            $this->email = $this->action->dbHandler->array['email'];
+            $this->username = $this->action->dbHandler->array['username'];
 
             if($this->email == $this->data['email'])
             {
                 $this->server_message = 'Данная почта уже используется';
-                $error = new SessionController;
-                $error->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                $this->session = new SessionController;
+                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
                 return;
 
             }
@@ -122,29 +121,29 @@ class UserController extends Controller
                     $this->redirect_page = '/login';
                     $this->data['password'] = password_hash($this->data['password'], PASSWORD_BCRYPT, ['cost' => 12]);  
 
-                    $register_user = new User();
-                    $register_user->CreateUser($this->data);
+                    $this->action = new User();
+                    $this->action->CreateUser($this->data);
 
-                    $user_redirect = new RedirectController($this->redirect_page);
+                    $this->action = new RedirectController($this->redirect_page);
                 }
             }
         }
     }
     public function UserLogin()
     {  
-        $this->view->RenderHTML('Авторизация');
+        $this->view->RenderHTML('Авторизация','');
 
         if(isset($_POST['button'])) {
             $this->data = [
                 'username' => $_POST['username'],
                 'password' => $_POST['password']
             ];
-            $user_check = new User();
-            $user_check->UserCheck($this->data);
+            $this->action = new User();
+            $this->action->UserCheck($this->data);
         
-            $this->username = $user_check->dbHandler->array['username'];
-            $this->email = $user_check->dbHandler->array['email'];
-            $this->password = $user_check->dbHandler->array['password'];
+            $this->username = $this->action->dbHandler->array['username'];
+            $this->email = $this->action->dbHandler->array['email'];
+            $this->password = $this->action->dbHandler->array['password'];
 
             if($this->data['username'] == $this->username && password_verify($this->data['password'], $this->password))
             {
@@ -169,6 +168,27 @@ class UserController extends Controller
                 $this->session = new SessionController();
                 $this->session->SessionError($this->server_response,$this->server_message,$this->redirect_page);
             }
+        }
     }
+    public function UserLogout()
+    {
+        $this->redirect_page = '/login';
+        if(isset($_SESSION['user']))
+        {
+            unset($_SESSION['user']);
+            $this->action = new RedirectController($this->redirect_page);
+            return;
+        }
+        elseif(isset($_SESSION['admin']))
+        {
+            unset($_SESSION['admin']);
+            $this->action = new RedirectController($this->redirect_page);
+            return;
+        }
+        else
+        {
+            $this->action = new RedirectController($this->redirect_page);
+            return;
+        }
     }
 }

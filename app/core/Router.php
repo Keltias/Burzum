@@ -19,7 +19,7 @@ class Router
 
     public function addRoute($route, $params)
     {
-        $route = '#^'.$route.'$#';
+        $route = '~^'.$route.'$~';
         $this->routes[$route] = $params;
     }
 
@@ -48,6 +48,11 @@ class Router
                 {
                     $object = new $controller($this->params);
                     $object->$method();
+                }
+                else
+                {
+                    require "404.php";
+                    die();
                 }
             }
             else

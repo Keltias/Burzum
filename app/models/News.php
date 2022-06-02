@@ -19,6 +19,26 @@ class News extends Model
 
         $this->dbHandler->execute();
     }
+    public function GetArticle($data)
+    {
+        $this->sql = ("SELECT * FROM {$this->table_name} WHERE `url_key` = :matches");
+        $this->dbHandler->query($this->sql);
+
+        $this->dbHandler->bind(':matches', $data);
+
+        $this->dbHandler->execute();
+        $this->dbHandler->FetchResult('fetch');
+
+        if($this->dbHandler->array == false)
+        {
+            require '404.php';
+            die();
+        }
+        else 
+        {
+
+        }
+    }
     public function GetNews()
     {
         $this->sql = ("SELECT * FROM {$this->table_name}");
@@ -26,7 +46,11 @@ class News extends Model
 
         $this->dbHandler->execute();
         $this->dbHandler->FetchResult('fetchAll');
-
-        var_dump($this->dbHandler);
+    }
+    public function ArticleDelete($data)
+    {
+        $this->sql = ("DELETE FROM {$this->table_name} WHERE `id` = '$data'");
+        $this->dbHandler->query($this->sql);
+        $this->dbHandler->execute();
     }
 }
