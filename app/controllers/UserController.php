@@ -30,12 +30,15 @@ class UserController extends Controller
         $username_pattern = '/^[a-z0-9-_]{5,13}$/i';
         $password_pattern = '/^[a-z0-9-_$&!@#]{6,}+$/i';
 
+        $this->public_id = rand(1, 50000);
+
         if(isset($_POST['button'])) {
             $this->data = [
                 'username' => trim(htmlspecialchars($_POST['username'])),
                 'email' => trim(htmlspecialchars($_POST['email'])),
                 'password' => trim(htmlspecialchars($_POST['password'])),
-                'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm']))
+                'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm'])),
+                'generated_id' => $this->public_id
             ];
             
             $this->action = new User();
@@ -59,10 +62,6 @@ class UserController extends Controller
                     return;
                 }
             }
-
-
-
-
             if(empty($this->data['email']))
             {
                 $this->server_message = 'Пожалуйста, укажите почту';

@@ -22,12 +22,14 @@ class User extends Model
 
     public function CreateUser(array $data)
     {
-        $this->sql = ("INSERT INTO {$this->table_name} (`id`, `username`, `email`, `password`) VALUES (NULL, :username, :email, :password)");
+        $this->sql = ("INSERT INTO {$this->table_name} (`id`, `public_id`, `username`, `email`, `password`) VALUES (NULL, :id, :username, :email, :password)");
         $this->dbHandler->query($this->sql);
 
         $this->dbHandler->bind(':username', $data['username']);
         $this->dbHandler->bind(':password', $data['password']);
         $this->dbHandler->bind(':email', $data['email']);
+        $this->dbHandler->bind(':id', $data['generated_id']);
+
 
         $this->dbHandler->execute();
     }
