@@ -7,6 +7,7 @@ use App\Models\News;
 class NewsController extends Controller 
 {
     public $redirect_page;
+    public $uri;
 
     public function CreateArticle()
     {
@@ -19,6 +20,7 @@ class NewsController extends Controller
                 'content' => $_POST['content'],
                 'author' => $_POST['author']
             ];
+
             $this->action = new News();
             $this->action->ArticleCreate($this->data);
         }
@@ -33,12 +35,10 @@ class NewsController extends Controller
     }
     public function DeleteArticle()
     {
+        $this->uri = $_SERVER['REQUEST_URI'];
         $this->redirect_page = '/';
-
-        $uri = $_SERVER['REQUEST_URI'];
-        $uri_pattern = '~(^delete$)*[0-9]{0,}$~';
-        
-        preg_match($uri_pattern, $uri, $matches);
+        $uri_pattern = '~(^delete$)*[0-9]*$~';
+        preg_match($uri_pattern, $this->uri, $matches);
         $this->data = $matches[0];
 
         $this->action = new News();
@@ -48,21 +48,26 @@ class NewsController extends Controller
     }
     public function ShowArticle()
     {
-        $uri = $_SERVER['REQUEST_URI'];
-        $uri_pattern = '~(^article$)*[a-zA-Z]{0,}$~';
-        preg_match($uri_pattern, $uri, $matches);
+        $this->uri = $_SERVER['REQUEST_URI'];
+
+        $uri_pattern = '~(^article-$)*[a-zA-Z]*$~';
+        preg_match($uri_pattern, $this->uri, $matches);
 
         $this->data = $matches[0];
-
         $this->action = new News();
-        $this->action->GetArticle($this->data);
 
+        $this->action->GetArticle($this->data);
         $this->data = $this->action->dbHandler->array;
 
         $this->view->RenderHTML('Страница статьи', $this->data);
     }
     public function EditArticle()
     {
+        $uri_pattern = '~(^article$)*[a-zA-Z]*$~';
+        preg_match($uri_pattern, $this->uri, $matches);
 
+        $this->data = $matches[0];
+
+        $this->view->RenderHTML('Редактирование статьи', $this->data);
     }
 }

@@ -34,10 +34,6 @@ class News extends Model
             require '404.php';
             die();
         }
-        else 
-        {
-
-        }
     }
     public function GetNews()
     {

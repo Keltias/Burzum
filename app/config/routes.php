@@ -6,9 +6,9 @@ return [
         'method' => 'NewsShow',
         'path' => './pages/main.php'
     ],
-    'profile' => [
+    '(profile-id=)*[0-9]*$' => [
         'controller' => 'UserController',
-        'method' => 'UserInfo',
+        'method' => 'UserProfile',
         'path' => './pages/user-profile.php'
     ],
     'login' => [
@@ -27,22 +27,22 @@ return [
         'method' => 'UserLogout',
         'path' => ''
     ],
-    '(article-)*[a-zA-Z]{0,}' => [
+    '^(article-)*[a-zA-Z]*$' => [
         'controller' => 'NewsController',
         'method' => 'ShowArticle',
         'path' => './pages/article-page.php'
     ],
-    'article-create' => [
+    'news-create' => [
         'controller' => 'NewsController',
         'method' => 'CreateArticle',
         'path' => './pages/article-create.php'
     ],
-    'article-edit' => [
+    'news-edit' => [
         'controller' => 'NewsController',
         'method' => 'ArticleEdit',
         'path' => './pages/article-edit.php'
     ],
-    '(delete-)*[0-9]{0,}' => [
+    '(delete-)*[0-9]*' => [
         'controller' => 'NewsController',
         'method' => 'DeleteArticle',
         'path' => ''

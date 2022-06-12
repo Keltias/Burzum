@@ -8,7 +8,6 @@ use App\Core\Controller;
 
 class UserController extends Controller
 {
-
     public $redirect_page;
     public $server_message;
     public $server_response;
@@ -16,6 +15,7 @@ class UserController extends Controller
     public $password;
     public $email;
     public $username;
+    public $public_id;
 
     public $session;
 
@@ -38,27 +38,29 @@ class UserController extends Controller
                 'password_confirm'  => trim(htmlspecialchars($_POST['password_confirm']))
             ];
             
-            $this->actiona = new User();
-            $this->actiona->UserCheck($this->data);
+            $this->action = new User();
+            $this->action->UserCheck($this->data);
 
-            $this->email = $this->action->dbHandler->array['email'];
-            $this->username = $this->action->dbHandler->array['username'];
+            if($this->action->dbHandler->array !== false) {
 
-            if($this->email == $this->data['email'])
-            {
-                $this->server_message = 'Данная почта уже используется';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-                return;
+                $this->email = $this->action->dbHandler->array['email'];
+                $this->username = $this->action->dbHandler->array['username'];
 
+                if ($this->email == $this->data['email']) {
+                    $this->server_message = 'Данная почта уже используется';
+                    $this->session = new SessionController;
+                    $this->session->SessionError($this->server_response, $this->server_message, $this->redirect_page);
+                    return;
+
+                } elseif ($this->username == $this->data['username']) {
+                    $this->server_message = 'Данный логин уже используется';
+                    $this->session = new SessionController;
+                    $this->session->SessionError($this->server_response, $this->server_message, $this->redirect_page);
+                    return;
+                }
             }
-            elseif($this->username == $this->data['username'])
-            {
-                $this->server_message = 'Данный логин уже используется';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response, $this->server_message, $this->redirect_page);
-                return;
-            }
+
+
 
 
             if(empty($this->data['email']))
@@ -143,18 +145,18 @@ class UserController extends Controller
         
             $this->username = $this->action->dbHandler->array['username'];
             $this->email = $this->action->dbHandler->array['email'];
+            $this->public_id = $this->action->dbHandler->array['public_id'];
             $this->password = $this->action->dbHandler->array['password'];
 
             if($this->data['username'] == $this->username && password_verify($this->data['password'], $this->password))
             {
-
                 $this->data = [
                     'username' => $this->data['username'],
                     'email' => $this->email
                 ];
 
                 $this->server_response = 'user';
-                $this->redirect_page = '/profile';
+                $this->redirect_page = '/profile-id='.$this->public_id;
 
                 $this->session = new SessionController();
                 $this->session->CreateSession($this->server_response,$this->data,$this->redirect_page);
@@ -189,6 +191,32 @@ class UserController extends Controller
         {
             $this->action = new RedirectController($this->redirect_page);
             return;
+        }
+    }
+    public function UserProfile()
+    {
+        $this->uri = $_SERVER['REQUEST_URI'];
+        $uri_pattern = '~(^profile-id=$)*[0-9]{0,}$~';
+        preg_match($uri_pattern, $this->uri, $matches);
+        $this->data = $matches;
+
+        $this->action = new User();
+        $this->action->GetUser($this->data);
+
+        if ($this->action->dbHandler->array !== false)
+        {
+            $this->email = $this->action->dbHandler->array['email'];
+            $this->username = $this->action->dbHandler->array['username'];
+            $this->public_id = $this->action->dbHandler->array['public_id'];
+            $this->data = [
+                'username' => $this->username,
+                'email' => $this->email,
+                'id' => $this->public_id,
+            ];
+            $this->view->RenderHTML('Регистрация',$this->data);
+        }
+        else {
+            echo 'Пользователя не существует';
         }
     }
 }

@@ -31,4 +31,14 @@ class User extends Model
 
         $this->dbHandler->execute();
     }
+    public function GetUser(array $data)
+    {
+        $this->sql = ("SELECT * FROM {$this->table_name} WHERE `public_id` = :id");
+        $this->dbHandler->query($this->sql);
+
+        $this->dbHandler->bind(':id', $data[0]);
+
+        $this->dbHandler->execute();
+        $this->dbHandler->FetchResult('fetch');
+    }
 }
