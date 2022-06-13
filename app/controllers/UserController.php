@@ -45,7 +45,6 @@ class UserController extends Controller
             $this->action->UserCheck($this->data);
 
             if($this->action->dbHandler->array !== false) {
-
                 $this->email = $this->action->dbHandler->array['email'];
                 $this->username = $this->action->dbHandler->array['username'];
 
@@ -61,71 +60,73 @@ class UserController extends Controller
                     $this->session->SessionError($this->server_response, $this->server_message, $this->redirect_page);
                     return;
                 }
-            }
-            if(empty($this->data['email']))
+            } 
+            else 
             {
-                $this->server_message = 'Пожалуйста, укажите почту';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-
-            }
-            elseif(empty($this->data['username']))
-            {
-                $this->server_message = 'Пожалуйста, придумайте логин';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-
-            }
-            elseif(empty($this->data['password']))
-            {
-                $this->server_message = 'Пожалуйста, придумайте пароль';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-
-            }
-            elseif(empty($this->data['password_confirm']))
-            {
-                $this->server_message = 'Пожалуйста, подтвердите пароль';
-                $this->session = new SessionController;
-                $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-            }
-            else
-            {
-                if(!preg_match($email_pattern, $this->data['email']))
+                if(empty($this->data['email']))
                 {
-                    $this->server_message = 'Пожалуйста, укажите существующую почту';
+                    $this->server_message = 'Пожалуйста, укажите почту';
                     $this->session = new SessionController;
                     $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+
                 }
-                elseif(!preg_match($username_pattern, $this->data['username']))
+                elseif(empty($this->data['username']))
                 {
-                    $this->server_message = 'Пожалуйста, придумайте соответствующий логин';
+                    $this->server_message = 'Пожалуйста, придумайте логин';
                     $this->session = new SessionController;
                     $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-                
+
                 }
-                elseif(!preg_match($password_pattern, $this->data['password']))
+                elseif(empty($this->data['password']))
                 {
-                    $this->server_message = 'Пожалуйста, придумайте сильный пароль.';
+                    $this->server_message = 'Пожалуйста, придумайте пароль';
                     $this->session = new SessionController;
                     $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
-                
+
                 }
-                elseif($this->data['password'] !== $this->data['password_confirm'])
+                elseif(empty($this->data['password_confirm']))
                 {
-                    $this->server_message= 'Пароли не совпадают';
+                    $this->server_message = 'Пожалуйста, подтвердите пароль';
                     $this->session = new SessionController;
                     $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
                 }
                 else
                 {
-                    $this->redirect_page = '/login';
-                    $this->data['password'] = password_hash($this->data['password'], PASSWORD_BCRYPT, ['cost' => 12]);  
+                    if(!preg_match($email_pattern, $this->data['email']))
+                    {
+                        $this->server_message = 'Пожалуйста, укажите существующую почту';
+                        $this->session = new SessionController;
+                        $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                    }
+                    elseif(!preg_match($username_pattern, $this->data['username']))
+                    {
+                        $this->server_message = 'Пожалуйста, придумайте соответствующий логин';
+                        $this->session = new SessionController;
+                        $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                    
+                    }
+                    elseif(!preg_match($password_pattern, $this->data['password']))
+                    {
+                        $this->server_message = 'Пожалуйста, придумайте сильный пароль.';
+                        $this->session = new SessionController;
+                        $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                    
+                    }
+                    elseif($this->data['password'] !== $this->data['password_confirm'])
+                    {
+                        $this->server_message= 'Пароли не совпадают';
+                        $this->session = new SessionController;
+                        $this->session->SessionError($this->server_response,$this->server_message, $this->redirect_page);
+                    }
+                    else
+                    {
+                        $this->redirect_page = '/login';
+                        $this->data['password'] = password_hash($this->data['password'], PASSWORD_BCRYPT, ['cost' => 12]);  
 
-                    $this->action = new User();
-                    $this->action->CreateUser($this->data);
-
-                    $this->action = new RedirectController($this->redirect_page);
+                        $this->action = new User();
+                        $this->action->CreateUser($this->data);
+                        $this->action = new RedirectController($this->redirect_page);
+                    }
                 }
             }
         }
@@ -151,7 +152,8 @@ class UserController extends Controller
             {
                 $this->data = [
                     'username' => $this->data['username'],
-                    'email' => $this->email
+                    'email' => $this->email,
+                    'public_id' => $this->public_id
                 ];
 
                 $this->server_response = 'user';
@@ -195,8 +197,8 @@ class UserController extends Controller
     public function UserProfile()
     {
         $this->uri = $_SERVER['REQUEST_URI'];
-        $uri_pattern = '~(^profile-id=$)*[0-9]{0,}$~';
-        preg_match($uri_pattern, $this->uri, $matches);
+        $this->uri_pattern = '~(^profile-id=$)*[0-9]{0,}$~';
+        preg_match($this->uri_pattern, $this->uri, $matches);
         $this->data = $matches;
 
         $this->action = new User();

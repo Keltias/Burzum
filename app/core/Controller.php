@@ -8,6 +8,9 @@ abstract class Controller
     public $view;
     public $action;
 
+    public $uri;
+    public $uri_pattern;
+
     public $data;
     
     public function __construct($route)

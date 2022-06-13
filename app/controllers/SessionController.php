@@ -17,8 +17,10 @@ class SessionController
         $this->session = $session;
         $_SESSION[$this->session] = [
             'username' => $data['username'],
-            'email' => $data['email']
+            'email' => $data['email'],
+            'id' => $data['public_id']
         ];
+
         $redirect = new RedirectController($page);
     }
     public function CheckSession($session, $page)
